@@ -2,30 +2,34 @@
 //  CalendarView.swift
 //  LearnByStreak
 //
-//  Created by Ruba Alghamdi on 27/04/1447 AH.
-//
 
 import SwiftUI
 
 struct CalendarView: View {
+    @State private var selectedDates: Set<DateComponents> = []
+
     var body: some View {
-        ZStack{
-            Color.black
-                .ignoresSafeArea()
-            VStack{
-                Text("all activities")
-                    .foregroundColor(Color.white)
-                MultiDatePicker("Label", selection: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Binding<Set<DateComponents>>@*/.constant([])/*@END_MENU_TOKEN@*/)
-                    .foregroundColor(Color.white)
-                    .background(Color.gray)
+        ZStack {
+            Color.black.ignoresSafeArea()
+
+            VStack(spacing: 20) {
+                Text("All Activities")
+                    .foregroundColor(.white)
+                    .font(.title2)
+                    .bold()
+
+                MultiDatePicker("",
+                    selection: $selectedDates)
+                .tint(.orange)
                 .padding()
+                .background(Color.gray.opacity(0.3))
+                .cornerRadius(16)
+
+                Spacer()
             }
-            
+            .padding()
         }
-        
     }
 }
 
-#Preview {
-    CalendarView()
-}
+#Preview { CalendarView() }

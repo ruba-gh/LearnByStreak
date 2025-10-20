@@ -2,70 +2,88 @@
 //  ContentView.swift
 //  LearnByStreak
 //
-//  Created by Ruba Alghamdi on 27/04/1447 AH.
-//
 
 import SwiftUI
 
 struct ContentView: View {
+    @State private var selectedDuration = "Week"
+    @State private var learningTopic = ""
+    @State private var showActivity = false
+
     var body: some View {
-        ZStack {
-            // Background to see the frosted effect against
-            Color.black
-                .ignoresSafeArea()
+        NavigationStack {
+            ZStack {
+                Color.black.ignoresSafeArea()
 
-            VStack(spacing: 30) {
-                ZStack{
-                    Circle()
-                        .fill(Color.orange.opacity(1))
-                        .glassEffect()
-                        .frame(width: 130)
-                    Image(systemName: "flame.fill")
-                        .imageScale(.large)
-                        .foregroundColor(Color.white)
-                   
-                } //circke zstack
-                VStack{
-                    Text("hello learner")
-                        .foregroundColor(Color.white)
-                        .bold()
-                    Text("this app will help you learn everyday")
-                        .foregroundColor(Color.gray)
-                } //1st vstack
-                VStack{
-                    Text("i want to learn")
-                        .foregroundColor(Color.white)
-                    TextField("Swift", text: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Value@*/.constant("")/*@END_MENU_TOKEN@*/)
+                VStack(spacing: 30) {
+                    // Fire icon
+                    ZStack {
+                        Circle()
+                            .fill(Color.orange.opacity(1))
+                            .glassEffect()
+                            .frame(width: 130)
+                        Image(systemName: "flame.fill")
+                            .imageScale(.large)
+                            .foregroundColor(.white)
+                    }
 
-                    
-                } //2nd vstack
-                VStack{
-                    Text("i want to learn it in a ")
-                        .foregroundColor(Color.white)
-                    HStack{
-                        Button("week") {
-                            /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/ /*@END_MENU_TOKEN@*/
+                    // Greeting
+                    VStack {
+                        Text("Hello Learner")
+                            .foregroundColor(.white)
+                            .font(.title)
+                            .bold()
+                        Text("This app will help you learn everyday!")
+                            .foregroundColor(.gray)
+                    }
+
+                    // Input: Topic
+                    VStack {
+                        Text("I want to learn")
+                            .foregroundColor(.white)
+                        TextField("Swift", text: $learningTopic)
+                            .textFieldStyle(.roundedBorder)
+                            .frame(width: 250)
+                    }
+
+                    // Duration
+                    VStack {
+                        Text("I want to learn it in a")
+                            .foregroundColor(.white)
+                        HStack {
+                            ForEach(["Week", "Month", "Year"], id: \.self) { duration in
+                                Button(duration) {
+                                    selectedDuration = duration
+                                }
+                                .padding()
+                                .frame(width: 90)
+                                .background(selectedDuration == duration ? Color.orange : Color.gray.opacity(0.3))
+                                .clipShape(Capsule())
+                                .foregroundColor(.white)
+                            }
                         }
-                        Button("month") {
-                            /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/ /*@END_MENU_TOKEN@*/
-                        }
-                        Button("year") {
-                            /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/ /*@END_MENU_TOKEN@*/
-                        }
-                    } //duration hstack
-                    
-                } //3rd vstack
-                Spacer()
-                Button("start learning") {
-                    /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/ /*@END_MENU_TOKEN@*/
+                    }
+
+                    Spacer()
+
+                    // Navigation to ActivityView
+                    NavigationLink(destination: ActivityView(), isActive: $showActivity) { EmptyView() }
+
+                    Button("Start Learning") {
+                        showActivity = true
+                    }
+                    .font(.headline)
+                    .padding(.horizontal, 30)
+                    .padding(.vertical, 12)
+                    .background(Color.orange)
+                    .clipShape(Capsule())
+                    .foregroundColor(.white)
                 }
-                
-            } // big vstack
-            .padding()
-        } //big background zstack
+                .padding()
+            }
+            .navigationBarBackButtonHidden(true)
+        }
     }
 }
 
-#Preview {
-    ContentView()
-}
+#Preview { ContentView() }

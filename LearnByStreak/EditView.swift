@@ -2,58 +2,53 @@
 //  EditView.swift
 //  LearnByStreak
 //
-//  Created by Ruba Alghamdi on 27/04/1447 AH.
-//
 
 import SwiftUI
 
 struct EditView: View {
-        var body: some View {
-            ZStack {
-                // Background to see the frosted effect against
-                Color.black
-                    .ignoresSafeArea()
+    @State private var learningTopic = ""
+    @State private var selectedDuration = "Week"
 
-                VStack(spacing: 30) {
-                    
-                    VStack{
-                        Text("Learning goal")
-                            .foregroundColor(Color.white)
-                            .bold()
-                    } //1st vstack
-                    VStack{
-                        Text("i want to learn")
-                            .foregroundColor(Color.white)
-                        TextField("Swift", text: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Value@*/.constant("")/*@END_MENU_TOKEN@*/)
+    var body: some View {
+        ZStack {
+            Color.black.ignoresSafeArea()
 
-                        
-                    } //2nd vstack
-                    VStack{
-                        Text("i want to learn it in a ")
-                            .foregroundColor(Color.white)
-                        HStack{
-                            Button("week") {
-                                /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/ /*@END_MENU_TOKEN@*/
+            VStack(spacing: 25) {
+                Text("Learning Goal")
+                    .foregroundColor(.white)
+                    .font(.title2)
+                    .bold()
+
+                VStack {
+                    Text("I want to learn")
+                        .foregroundColor(.white)
+                    TextField("Swift", text: $learningTopic)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: 250)
+                }
+
+                VStack {
+                    Text("I want to learn it in a")
+                        .foregroundColor(.white)
+                    HStack {
+                        ForEach(["Week", "Month", "Year"], id: \.self) { duration in
+                            Button(duration) {
+                                selectedDuration = duration
                             }
-                            Button("month") {
-                                /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/ /*@END_MENU_TOKEN@*/
-                            }
-                            Button("year") {
-                                /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Action@*/ /*@END_MENU_TOKEN@*/
-                            }
-                        } //duration hstack
-                        
-                    } //3rd vstack
-                    Spacer()
-                    
-                    
-                } // big vstack
-                .padding()
-            } //big background zstack
+                            .padding()
+                            .frame(width: 90)
+                            .background(selectedDuration == duration ? Color.orange : Color.gray.opacity(0.3))
+                            .clipShape(Capsule())
+                            .foregroundColor(.white)
+                        }
+                    }
+                }
+
+                Spacer()
+            }
+            .padding()
         }
     }
-
-
-#Preview {
-    EditView()
 }
+
+#Preview { EditView() }
