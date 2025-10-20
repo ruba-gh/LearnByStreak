@@ -6,6 +6,7 @@
 import SwiftUI
 
 struct ActivityView: View {
+    @State private var goal: LearningGoal? = GoalManager.shared.loadGoal()
     var body: some View {
         NavigationStack {
             ZStack {
@@ -38,7 +39,7 @@ struct ActivityView: View {
                             .fill(Color.gray.opacity(0.3))
                             .frame(height: 260)
                         VStack {
-                            Text("Learning Swift")
+                            Text("Learning \(goal?.topic ?? "Swift")")
                                 .foregroundColor(.white)
                                 .font(.headline)
                             HStack(spacing: 12) {
@@ -54,26 +55,55 @@ struct ActivityView: View {
                         Circle()
                             .fill(Color.white)
                             .frame(width: 300)
-                        Text("Log as Learned")
-                            .font(.title2)
-                            .bold()
+                        Button("Log as Learned") {
+                            logProgress(isFreeze: false)
+                        }
                     }
 
-                    Button("Log as Freezed") { }
+                    Button("Log as Freezed") {logProgress(isFreeze: true) }
                         .padding(.vertical, 12)
                         .padding(.horizontal, 50)
                         .background(Color.gray.opacity(0.3))
                         .clipShape(Capsule())
                         .foregroundColor(.white)
 
-                    Text("1 out of 2 freezes used")
-                        .foregroundColor(.gray)
+
+                    
+
 
                     Spacer()
                 }
                 .padding(.top)
             }
         }
+    }
+    
+    private func logProgress(isFreeze: Bool) {
+        guard var goal = goal else { return }
+        let today = Calendar.current.startOfDay(for: Date())
+
+        // Prevent logging more than once a day
+        if let last = goal.lastLoggedDate,
+           Calendar.current.isDate(last, inSameDayAs: today) {
+            return
+        }
+
+        goal.lastLoggedDate = today
+
+        if isFreeze {
+            goal.freezesUsed += 1
+        } else {
+            goal.streakDays += 1
+        }
+
+        GoalManager.shared.saveGoal(goal)
+        self.goal = goal
+        
+        if let last = goal.lastLoggedDate,
+           Date().timeIntervalSince(last) > 60 * 60 * 32 { // 32 hours
+            goal.streakDays = 0
+        }
+
     }
 
     // Small stat capsule
